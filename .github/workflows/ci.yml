@@ -8,6 +8,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      mongo:
+        image: mongo
+        ports:
+          - 27017:27017
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -15,10 +21,16 @@ jobs:
     - name: Build Docker image
       run: docker build ./app -t donation-app
 
-    - name: Run container test
-      run: docker run -d -p 3000:3000 donation-app
+    - name: Run container
+      run: 
+        docker run -d \
+        -p 3000:3000 \
+        -e MONGO_URL=monogdb://host.docker.internal:27017/donations \
+        -e PORT=3000
+        donation-app
+
+    - name: Wait for app
+      run: sleep 10
 
     - name: Test API
-      run: |
-        sleep 5
-        curl http://localhost:3000
+      run: curl http://localhost:3000
