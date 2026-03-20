@@ -12,5 +12,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Build Docker Image
-      run: docker build -t donation-app ./app
+    - name: Build Docker image
+      run: docker build ./app -t donation-app
+
+    - name: Run container test
+      run: docker run -d -p 3000:3000 donation-app
+
+    - name: Test API
+      run: |
+        sleep 5
+        curl http://localhost:3000

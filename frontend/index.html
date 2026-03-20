@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Donation App</title>
+</head>
+<body>
+
+<h2>Make a Donation</h2>
+
+<input id="name" placeholder="Name" />
+<input id="amount" placeholder="Amount" type="number" />
+<button onclick="donate()">Donate</button>
+
+<h3>Donations:</h3>
+<ul id="list"></ul>
+
+<script>
+const API = "/api";
+
+async function donate() {
+  const name = document.getElementById("name").value;
+  const amount = document.getElementById("amount").value;
+
+  await fetch(API + "/donate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name, amount })
+  });
+
+  loadDonations();
+}
+
+async function loadDonations() {
+  const res = await fetch(API + "/donations");
+  const data = await res.json();
+
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  data.forEach(d => {
+    const li = document.createElement("li");
+    li.innerText = `${d.name} donated ${d.amount}`;
+    list.appendChild(li);
+  });
+}
+
+loadDonations();
+</script>
+
+</body>
+</html>
