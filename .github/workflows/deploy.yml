@@ -17,7 +17,7 @@ jobs:
 
       # Build Docker image
       - name: Build Docker image
-        run: docker build -t ghcr.io/${{ secrets.GHCR_USERNAME }}/donation-app:latest .
+        run: docker build -t ./app ghcr.io/${{ secrets.GHCR_USERNAME }}/donation-app:latest .
 
       # Push image
       - name: Push Image
