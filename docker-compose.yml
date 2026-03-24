@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   app:
     build: ./app
@@ -7,7 +5,7 @@ services:
       - "3000:3000"
     environment:
       - PORT=3000
-      - MONGO_URI=mongodb://mongo:27017/donations
+      - MONGO_URI=mongodb+srv://admin:Admindb@cluster0.q98vajw.mongodb.net/?appName=Cluster0
     depends_on:
       - mongo
 
