@@ -47,7 +47,7 @@ jobs:
             --registry-password "${{ secrets.GHCR_TOKEN }}" \
             --cpu 0.5 \
             --memory 1 \
-            --ports 80 \
+            --ports 3000 \
             --dns-name-label donation-app-ci-cd \
             --os-type Linux \
             --environment-variables PORT=3000 MONGO_URI="${{ secrets.MONGO_URI }}" 
