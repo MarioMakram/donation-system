@@ -43,8 +43,8 @@ jobs:
             --name donation-app \
             --image ghcr.io/${{ secrets.GHCR_USERNAME }}/donation-app:latest \
             --registry-login-server ghcr.io \
-            --registry-username mariomakram \
-            --registry-password $GHCR_TOKEN \
+            --registry-username "${{ secrets.GHCR_USERNAME }}" \
+            --registry-password "${{ secrets.GHCR_TOKEN }}" \
             --cpu 0.5 \
             --memory 1 \
             --ports 80 \
