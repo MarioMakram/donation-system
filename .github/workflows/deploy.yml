@@ -1,0 +1,46 @@
+name: CICD Pipeline
+on: 
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Login to GitHub Container Registry
+      - name: GHCR login
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+      # Build Docker image
+      - name: Build Docker image
+        run: docker build -t ghcr.io/${{ secrets.GHCR_USERNAME }}/donation-app:latest .
+
+      # Push image
+      - name: Push Image
+        run: docker push ghcr.io/${{ secrets.GHCR_USERNAME }}/donation-app:latest
+
+      # Login to Azure
+      - name: Azure Login
+        uses: azure/login@v2 
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+   
+      # Deploy to Azure Container Instance
+      - name: Deploy to Azure
+        run: |
+          az container create \
+            --resource-group donation-rg \
+            --name donation-app \
+            --image ghcr.io/${{ secrets.GHCR_USERNAME }}/donation-app:latest \
+            --cpu 0.5 \
+            --memory 1 \
+            --ports 80 \
+            --dns-name-label donation-app-ci-cd \
+            --os-type Linux \
+            --environment-variables PORT=3000 MONGO_URI="${{ secrets.MONGO_URI }}" 
