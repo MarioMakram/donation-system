@@ -6,12 +6,12 @@ const cors = require('cors');
 
 const donationRoutes = require('./routes/donationRoutes');
 
-const app = express();   // 👈 لازم الأول
+const app = express();
 const PORT = process.env.PORT || 3000;
 
 // middlewares
 app.use(express.json());
-app.use(cors());   // 👈 بعد تعريف app
+app.use(cors());
 
 // logging middleware
 app.use((req, res, next) => {
@@ -27,16 +27,18 @@ app.get('/', (req, res) => {
   res.send('Donation API is running 🚀');
 });
 
+
 // DB connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB');
-
-    app.listen(PORT, 0.0.0.0, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-
   })
   .catch(err => {
     console.error('MongoDB connection error:', err);
+  })
+  .finally(() => {
+    // 🚀 مهم: تشغيل السيرفر مهما حصل في Mongo
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running on port ${PORT}`);
+    });
   });
