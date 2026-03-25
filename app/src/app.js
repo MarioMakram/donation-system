@@ -37,7 +37,6 @@ mongoose.connect(process.env.MONGO_URI)
     console.error('MongoDB connection error:', err);
   })
   .finally(() => {
-    // 🚀 مهم: تشغيل السيرفر مهما حصل في Mongo
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server running on port ${PORT}`);
     });
